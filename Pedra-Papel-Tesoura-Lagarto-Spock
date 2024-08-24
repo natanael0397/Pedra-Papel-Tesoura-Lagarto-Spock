@@ -1,0 +1,65 @@
+import random
+
+print("Olá, seja bem-vindo ao Pedra,Papel,Tesoura,Lagarto,Spock!")
+print("Voce gostaria de uma explicação antes?")
+Opções= """
+
+[S] Sim 
+[N] Não obrigado 
+
+
+"""
+while True:
+    opcao = input(Opções).upper()   
+    if opcao == ("S"):
+        print("///////////////////////////////////////////////////////////////////////////")
+        print("Esta versão do famoso jogo foi popularizada no seriado The Big Bang Theory,")
+        print("e consiste da seguinte maneira de jogar:")
+        print("Pedra vence Tesoura")
+        print("Tesoura vence Lagarto")
+        print("Lagarto vence Spock")
+        print("Spock vence Pedra")
+        print("Pedra vence Lagarto")
+        print("Lagarto vence papel")
+        print("Papel refuta Spock")
+        print("Spock vence Tesoura")
+        print("Tesoura vence Papel")
+        print("Papel vence Pedra")
+        print("Agora que voce já sabe,vamos para o jogo!")
+        print("///////////////////////////////////////////////////////////////////////////")
+        break    
+    elif opcao == ("N"):
+        print("Show,então vamos para o jogo!")
+    break    
+    
+
+
+def play():
+    user = input("Qual a sua escolha? 'P' para pedra, 'Pp' para papel, 'T' para tesoura, 'L' para lagarto, 'Sp''' para Spock \n")
+    computer = random.choice(['P', 'Pp', 'T', 'L', 'Sp'])
+    
+    if user == computer:
+        return "É um empate!"
+    choices = {'P': 'Pedra', 'Pp': 'Papel', 'T': 'Tesoura', 'L': 'Lagarto', 'Sp': 'Spock'}
+    print(f"O oponente escolheu: {choices[computer]}")
+
+    if is_win(user, computer):
+        return "Voce ganhou!!!"
+    
+    return "Infelizmente voce perdeu!"
+
+def is_win(player, opponent):
+    
+    if (player == 'P' and (opponent == 'T' or opponent == 'L')) or \
+       (player == 'Pp' and (opponent == 'P' or opponent == 'Sp')) or \
+       (player == 'T' and (opponent == 'Pp' or opponent == 'L')) or \
+       (player == 'L' and (opponent == 'Sp' or opponent == 'P')) or \
+       (player == 'Sp' and (opponent == 'P' or opponent == 'T')):
+        return True
+    return False
+while True:
+        print(play()) 
+        replay = input("Quer jogar novamente? (S/N): ").upper() 
+        if replay != "S":
+            print("Obrigado por jogar! Até a próxima!")
+            break
