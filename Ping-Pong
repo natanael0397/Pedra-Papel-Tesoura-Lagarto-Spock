@@ -1,0 +1,130 @@
+import turtle
+
+class Paddle:
+    def __init__(self, x_pos):
+        self.paddle = turtle.Turtle()
+        self.paddle.speed(0)
+        self.paddle.shape("square")
+        self.paddle.color("white")
+        self.paddle.shapesize(stretch_wid=5, stretch_len=1)
+        self.paddle.penup()
+        self.paddle.goto(x_pos, 0)
+
+    def move_up(self):
+        y = self.paddle.ycor()
+        y += 20
+        self.paddle.sety(y)
+
+    def move_down(self):
+        y = self.paddle.ycor()
+        y -= 20
+        self.paddle.sety(y)
+
+
+class Ball:
+    def __init__(self):
+        self.ball = turtle.Turtle()
+        self.ball.speed(0)
+        self.ball.shape("square")
+        self.ball.color("white")
+        self.ball.penup()
+        self.ball.goto(0, 0)
+        self.ball.dx = 0.2
+        self.ball.dy = 0.2
+
+    def move(self):
+        self.ball.setx(self.ball.xcor() + self.ball.dx)
+        self.ball.sety(self.ball.ycor() + self.ball.dy)
+
+    def check_collision(self, paddle_a, paddle_b):
+        
+        # Colisão com a borda superior
+        if self.ball.ycor() > 290:
+            self.ball.sety(290)
+            self.ball.dy *= -1
+
+        # Colisão com a borda inferior
+        if self.ball.ycor() < -290:
+            self.ball.sety(-290)
+            self.ball.dy *= -1
+
+        # Colisão com a raquete direita
+        if (self.ball.xcor() > 340 and self.ball.xcor() < 350) and \
+           (self.ball.ycor() < paddle_b.paddle.ycor() + 50 and self.ball.ycor() > paddle_b.paddle.ycor() - 50):
+            self.ball.setx(340)
+            self.ball.dx *= -1
+
+        # Colisão com a raquete esquerda
+        if (self.ball.xcor() < -340 and self.ball.xcor() > -350) and \
+           (self.ball.ycor() < paddle_a.paddle.ycor() + 50 and self.ball.ycor() > paddle_a.paddle.ycor() - 50):
+            self.ball.setx(-340)
+            self.ball.dx *= -1
+
+
+class Placar:
+    def __init__(self):
+        self.score_a = 0
+        self.score_b = 0
+        self.pen = turtle.Turtle()
+        self.pen.speed(0)
+        self.pen.color("yellow")
+        self.pen.penup()
+        self.pen.hideturtle()
+        self.pen.goto(0, 260)
+        self.update_score()
+
+    def update_score(self):
+        self.pen.clear()
+        self.pen.write(f"Jogador 1: {self.score_a}  Jogador 2: {self.score_b}", align="center", font=("Courier", 24, "italic"))
+
+    def increase_score_a(self):
+        self.score_a += 1
+        self.update_score()
+
+    def increase_score_b(self):
+        self.score_b += 1
+        self.update_score()
+
+
+# Configurações iniciais
+wn = turtle.Screen()
+wn.title("Ping-Pong infinito")
+wn.bgcolor("blue")
+wn.setup(width=800, height=600)
+wn.tracer(0)
+
+# Objetos do jogo
+paddle_a = Paddle(-350)
+paddle_b = Paddle(350)
+ball = Ball()
+scoreboard = Placar()
+
+# Ligações do teclado
+wn.listen()
+wn.onkeypress(paddle_a.move_up, "w")
+wn.onkeypress(paddle_a.move_down, "s")
+wn.onkeypress(paddle_b.move_up, "Up")
+wn.onkeypress(paddle_b.move_down, "Down")
+
+# Loop principal do jogo
+while True:
+    wn.update()
+
+    # Movimenta a bola
+    ball.move()
+
+    # Verifica colisões
+    ball.check_collision(paddle_a, paddle_b)
+
+    # Pontuação
+    if ball.ball.xcor() > 390:
+        ball.ball.goto(0, 0)
+        ball.ball.dx *= -1
+        scoreboard.increase_score_a()
+
+    if ball.ball.xcor() < -390:
+        ball.ball.goto(0, 0)
+        ball.ball.dx *= -1
+        scoreboard.increase_score_b()
+    if scoreboard.score_a == 10 or scoreboard.score_b == 10:
+       break
